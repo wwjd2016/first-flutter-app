@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'home/home.dart';
+import 'todo/todo.dart';
+import 'fitness/fitness.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,71 +14,56 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'I DO'),
+      home: MyLayout()
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-
-  MyHomePage({Key key, this.title}) : super(key:key);
-
-  final String title;
-
+class MyLayout extends StatefulWidget {
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MyLayoutState createState() => new _MyLayoutState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyLayoutState extends State<MyLayout> {
+  int _currentSelect = 0;
+  final List<Widget> _child = [
+    MyHomePage(),
+    MyTodoPage(),
+    FitPage()
+  ];
+  final List<String> _titles = ["I do", "Todo List", "I do"];
 
-  void onSetting() {
-    // TODO 打开设置页面
+  void onSetting() {}
+  void _onItemTap(int index) {
+    print(index);
+    setState(() {
+      _currentSelect = index;
+    });
   }
 
+  @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    // TODO: implement build
+    return Scaffold(
       appBar: new AppBar(
-        title: new Text(widget.title),
+        title: new Text(_titles[_currentSelect]),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.settings), onPressed: onSetting,)
-        ],
-      ),
-      body: Column(
-        children: <Widget>[
-          Row(
-            children: <Widget>[ReadCard()],
-          ),
-          Row(
-            children: <Widget>[InforCard()],
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: onSetting,
           )
         ],
       ),
+      body: _child[_currentSelect],
       bottomNavigationBar: BottomNavigationBar(items: <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
-        BottomNavigationBarItem(icon: Icon(Icons.business), title: Text('Todo')),
+        BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home'),),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.business), title: Text('Todo')),
         BottomNavigationBarItem(icon: Icon(Icons.face), title: Text('Fitness'))
-      ]),
-    );
-  }
-
-}
-
-class InforCard extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    return new Text('abc');
-  }
-
-}
-
-class ReadCard extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: new Text('The fear of the Lord is the beginning of wisdom.\n --《Holy bible》'),
-      padding: EdgeInsets.all(20.0),
+      ],
+        onTap: _onItemTap,
+        currentIndex: _currentSelect,
+      ),
     );
   }
 }
